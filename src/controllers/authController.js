@@ -4,6 +4,7 @@ const Usuario = require('../models/usuarioModel');
 
 exports.registrar = async (req, res) => {
     try {
+        console.log('REQ BODY:', req.body);  
         const { Nombre, Correo, Contraseña, Rol } = req.body;
 
         // Verificar si el usuario ya existe
