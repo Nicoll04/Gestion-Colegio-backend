@@ -1,6 +1,8 @@
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const Usuario = require('../models/usuarioModel');
+const { OAuth2Client } = require('google-auth-library');
+const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 
 exports.registrar = async (req, res) => {
     try {
@@ -58,5 +60,46 @@ exports.login = async (req, res) => {
 
     } catch (err) {
         res.status(500).json({ error: err.message });
+    }
+};
+
+exports.googleLogin = async (req, res) => {
+    const { googleToken } = req.body;
+
+    try {
+        // Verifica el token con Google
+        const ticket = await client.verifyIdToken({
+            idToken: googleToken,
+            audience: process.env.GOOGLE_CLIENT_ID,
+        });
+
+        const payload = ticket.getPayload();
+        const { email, name } = payload;
+
+        // Busca usuario por correo
+        let usuario = await Usuario.findOne({ where: { Correo: email } });
+
+        // Si no existe, lo crea con contraseña aleatoria
+        if (!usuario) {
+            usuario = await Usuario.create({
+                Nombre: name,
+                Correo: email,
+                Contraseña: await bcrypt.hash(Date.now().toString(), 10),
+                Rol: 'Usuario' // o el rol que quieras por defecto
+            });
+        }
+
+        // Crea token
+        const token = jwt.sign(
+            { ID_Usuario: usuario.ID_Usuario, Rol: usuario.Rol },
+            process.env.JWT_SECRET,
+            { expiresIn: '1h' }
+        );
+
+        res.json({ token, rol: usuario.Rol });
+
+    } catch (err) {
+        console.error('Error en login con Google:', err);
+        res.status(401).json({ error: 'Token inválido de Google' });
     }
 };

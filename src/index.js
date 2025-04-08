@@ -1,12 +1,12 @@
 const express = require('express');
 const cors = require('cors');
-const sequelize = require('./config/db'); // Conexión a la BD
-const estudiantesRoutes = require('./routes/estudiantesRoutes'); // Importar rutas de estudiantes
-const cursosRoutes = require('./routes/cursosRoutes'); //Importar rutas de cursos
-const familiaresRoutes = require('./routes/familiaresRoutes'); //Importar rutas de familiares
-const profesoresRoutes = require('./routes/profesoresRoutes');//Importar rutas de profesores 
-const authRoutes = require('./routes/authRoutes'); //Importa rutas de usuarios
-const { Curso, Estudiante } = require('./models/associations'); // Cargar relaciones después de definir modelos
+const sequelize = require('./config/db'); 
+const estudiantesRoutes = require('./routes/estudiantesRoutes'); 
+const cursosRoutes = require('./routes/cursosRoutes'); 
+const familiaresRoutes = require('./routes/familiaresRoutes'); 
+const profesoresRoutes = require('./routes/profesoresRoutes');
+const authRoutes = require('./routes/authRoutes'); 
+const { Curso, Estudiante } = require('./models/associations'); 
 
 
 
