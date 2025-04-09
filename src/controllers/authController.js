@@ -81,13 +81,16 @@ exports.googleLogin = async (req, res) => {
 
         let usuario = await Usuario.findOne({ where: { Correo: email } });
 
+        let esNuevo = false;
+
         if (!usuario) {
             usuario = await Usuario.create({
                 Nombre: name,
                 Correo: email,
                 Contraseña: await bcrypt.hash(Date.now().toString(), 10),
-                Rol: 'Usuario' // Cambia esto si quieres otro rol por defecto
+                Rol: null 
             });
+            esNuevo = true;
         }
 
         const token = jwt.sign(
@@ -96,11 +99,37 @@ exports.googleLogin = async (req, res) => {
             { expiresIn: '1h' }
         );
 
-        // Puedes retornar también el nombre si lo vas a mostrar en el frontend
-        res.json({ token, rol: usuario.Rol, nombre: usuario.Nombre });
+        res.json({
+            token,
+            rol: usuario.Rol,
+            nombre: usuario.Nombre,
+            esNuevo
+        });
 
     } catch (err) {
         console.error('Error en login con Google:', err);
         res.status(401).json({ error: 'Token inválido de Google' });
     }
 };
+
+
+exports.asignarRol = async (req, res) => {
+    const { ID_Usuario, Rol } = req.body;
+
+    if (!['admin', 'secretaria', 'coordinacion'].includes(Rol)) {
+        return res.status(400).json({ error: 'Rol no válido' });
+    }
+
+    try {
+        const usuario = await Usuario.findByPk(ID_Usuario);
+        if (!usuario) return res.status(404).json({ error: 'Usuario no encontrado' });
+
+        usuario.Rol = Rol;
+        await usuario.save();
+
+        res.json({ message: 'Rol asignado correctamente', rol: usuario.Rol });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+};
+

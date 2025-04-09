@@ -25,10 +25,10 @@ exports.verificarToken = (req, res, next) => {
 
 exports.verificarRol = (rolesPermitidos) => {
     return (req, res, next) => {
-        const { Rol } = req.usuario; 
+        const { Rol } = req.usuario;
 
-        if (!rolesPermitidos.includes(Rol)) {
-            return res.status(403).json({ error: "Acceso denegado" });
+        if (!Rol || !rolesPermitidos.includes(Rol)) {
+            return res.status(403).json({ error: "Acceso denegado: rol no autorizado o no asignado." });
         }
 
         next();

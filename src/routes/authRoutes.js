@@ -6,5 +6,7 @@ const router = express.Router();
 router.post('/register', registrar);
 router.post('/login', login);
 router.post('/google-token', googleLogin); 
+router.post('/asignar-rol', verificarToken, asignarRol);
+
 
 module.exports = router;
