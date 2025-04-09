@@ -66,8 +66,11 @@ exports.login = async (req, res) => {
 exports.googleLogin = async (req, res) => {
     const { googleToken } = req.body;
 
+    if (!googleToken) {
+        return res.status(400).json({ error: 'Token de Google no recibido' });
+    }
+
     try {
-        // Verifica el token con Google
         const ticket = await client.verifyIdToken({
             idToken: googleToken,
             audience: process.env.GOOGLE_CLIENT_ID,
@@ -76,27 +79,25 @@ exports.googleLogin = async (req, res) => {
         const payload = ticket.getPayload();
         const { email, name } = payload;
 
-        // Busca usuario por correo
         let usuario = await Usuario.findOne({ where: { Correo: email } });
 
-        // Si no existe, lo crea con contraseña aleatoria
         if (!usuario) {
             usuario = await Usuario.create({
                 Nombre: name,
                 Correo: email,
                 Contraseña: await bcrypt.hash(Date.now().toString(), 10),
-                Rol: 'Usuario' // o el rol que quieras por defecto
+                Rol: 'Usuario' // Cambia esto si quieres otro rol por defecto
             });
         }
 
-        // Crea token
         const token = jwt.sign(
             { ID_Usuario: usuario.ID_Usuario, Rol: usuario.Rol },
             process.env.JWT_SECRET,
             { expiresIn: '1h' }
         );
 
-        res.json({ token, rol: usuario.Rol });
+        // Puedes retornar también el nombre si lo vas a mostrar en el frontend
+        res.json({ token, rol: usuario.Rol, nombre: usuario.Nombre });
 
     } catch (err) {
         console.error('Error en login con Google:', err);
