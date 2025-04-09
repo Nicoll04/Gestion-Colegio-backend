@@ -114,7 +114,8 @@ exports.googleLogin = async (req, res) => {
 
 
 exports.asignarRol = async (req, res) => {
-    const { ID_Usuario, Rol } = req.body;
+    const { Rol } = req.body;
+    const ID_Usuario = req.usuario.ID_Usuario; 
 
     if (!['admin', 'secretaria', 'coordinacion'].includes(Rol)) {
         return res.status(400).json({ error: 'Rol no válido' });
@@ -127,9 +128,20 @@ exports.asignarRol = async (req, res) => {
         usuario.Rol = Rol;
         await usuario.save();
 
-        res.json({ message: 'Rol asignado correctamente', rol: usuario.Rol });
+        const nuevoToken = jwt.sign(
+            { ID_Usuario: usuario.ID_Usuario, Rol: usuario.Rol },
+            process.env.JWT_SECRET,
+            { expiresIn: '1h' }
+        );
+
+        res.json({ 
+            message: 'Rol asignado correctamente', 
+            rol: usuario.Rol,
+            token: nuevoToken
+        });
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
 };
+
 
