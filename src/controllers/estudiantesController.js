@@ -140,7 +140,11 @@ exports.updateEstudiante = async (req, res) => {
             console.log("\ud83d\uddbc\ufe0f URL de la imagen antes de actualizar en BD:", imageUrl);
     
             // Actualizar solo la foto
-            await estudiante.update({ Foto: imageUrl });
+            await estudiante.update({
+                ...req.body,
+                Foto: imageUrl 
+            });
+            
     
             // Verificar si la actualización fue exitosa
             const estudianteActualizado = await Estudiante.findByPk(req.params.id);
