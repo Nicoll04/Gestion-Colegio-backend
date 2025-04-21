@@ -9,7 +9,7 @@ router.get('/', verificarToken, verificarRol(["admin", "coordinacion", "secretar
 router.get('/:id', verificarToken, verificarRol(["admin", "coordinacion", "secretaria"]), estudianteController.getEstudianteById);
 
 router.post("/", verificarToken, verificarRol(["admin"]), upload.single("Foto"), estudianteController.createEstudiante);
-router.put('/:id', verificarToken, verificarRol(["admin"]), upload.single("Foto"), estudianteController.updateEstudiante);
+router.put('/:id', verificarToken, verificarRol(["admin"]),estudianteController.updateEstudiante);
 router.delete('/:id', verificarToken, verificarRol(["admin"]), estudianteController.deleteEstudiante);
 
 
