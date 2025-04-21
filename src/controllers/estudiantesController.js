@@ -16,7 +16,7 @@ exports.getEstudiantesConFamiliares = async (req, res) => {
                     {
                         model: Familiar,
                         as: "familiares",
-                        attributes: ["ID_Familiar", "nombre_completo", "parentesco"],
+                        attributes: ["ID_Familiar", "nombre_completo", "representante"],
                     },
                 ],
             });
@@ -41,7 +41,7 @@ exports.getAllEstudiantes = async (req, res) => {
 exports.getEstudianteById = async (req, res) => {
         try {
             const estudiante = await Estudiante.findByPk(req.params.id, {
-                include: { model: Familiar, as: "familiares" } // Incluir familiares
+                include: { model: Familiar, as: "familiares" } 
             });
     
             if (!estudiante) {

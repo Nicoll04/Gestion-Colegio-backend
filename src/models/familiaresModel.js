@@ -9,7 +9,6 @@ const Familiar = sequelize.define('Familiar', {
     ID_Estudiante: {
         type: DataTypes.INTEGER,
         allowNull: false
-        // ¡No pongas referencias aquí!
     },
     Representante: {
         type: DataTypes.STRING,
