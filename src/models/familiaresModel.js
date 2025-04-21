@@ -16,7 +16,7 @@ const Familiar = sequelize.define('Familiar', {
     },
     Parentesco: {
         type: DataTypes.STRING,
-        allowNull: false
+        allowNull: true 
     },
     Nombre_completo: {
         type: DataTypes.STRING,
@@ -24,12 +24,12 @@ const Familiar = sequelize.define('Familiar', {
     },
     Nro_Documento: {
         type: DataTypes.STRING,
-        allowNull: false,
+        allowNull: true, 
         unique: true
     },
     Direccion_Residencia: {
         type: DataTypes.STRING,
-        allowNull: false
+        allowNull: true 
     },
     Celular: {
         type: DataTypes.STRING,
@@ -37,7 +37,7 @@ const Familiar = sequelize.define('Familiar', {
     },
     Email: {
         type: DataTypes.STRING,
-        allowNull: false,
+        allowNull: true, // <-- ahora puede ser nulo
         unique: true
     }
 }, {
