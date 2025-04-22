@@ -64,7 +64,7 @@ exports.login = async (req, res) => {
 };
 
 exports.googleLogin = async (req, res) => {
-    const { googleToken } = req.body;
+    const { credential: googleToken } = req.body;
 
     if (!googleToken) {
         return res.status(400).json({ error: 'Token de Google no recibido' });
