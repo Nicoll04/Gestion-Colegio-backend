@@ -9,8 +9,5 @@ router.get('/:id', verificarToken, verificarRol(["admin","coordinacion","secreta
 router.post('/',verificarToken, verificarRol(["admin"]), familiaresController.createFamiliar);
 router.put('/:id',verificarToken, verificarRol(["admin"]), familiaresController.updateFamiliar);
 router.delete('/:id',verificarToken, verificarRol(["admin"]), familiaresController.deleteFamiliar);
-router.get('/verificar', verificarToken, verificarRol(["admin"]), familiaresController.verificarFamiliar);
-router.post('/asociar', verificarToken, verificarRol(["admin"]), familiaresController.asociarFamiliarEstudiante);
-
 
 module.exports = router;
