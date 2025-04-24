@@ -38,7 +38,6 @@ const Familiar = sequelize.define('Familiar', {
     Email: {
         type: DataTypes.STRING,
         allowNull: true, 
-        unique: true
     }
 }, {
     tableName: 'Familiares',

@@ -6,7 +6,7 @@ const cursosRoutes = require('./routes/cursosRoutes');
 const familiaresRoutes = require('./routes/familiaresRoutes'); 
 const profesoresRoutes = require('./routes/profesoresRoutes');
 const authRoutes = require('./routes/authRoutes'); 
-const { Curso, Estudiante } = require('./models/associations'); 
+const { Curso, Estudiante, Familiar, FamiliarEstudiante } = require('./models/associations');
 
 
 
