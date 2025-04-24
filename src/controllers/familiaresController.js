@@ -106,16 +106,32 @@ exports.updateFamiliar = async (req, res) => {
         // Actualizamos los campos del familiar
         await familiar.update(req.body);
 
-        // Si se pasa un ID_Estudiante en el cuerpo de la solicitud, actualizamos la relación
+        // Si se pasa un ID_Estudiante en el cuerpo de la solicitud, agregamos la relación si no existe
         if (req.body.ID_Estudiante) {
-            await familiar.setEstudiantes([req.body.ID_Estudiante]);
+            const estudiante = await Estudiante.findByPk(req.body.ID_Estudiante);
+            if (!estudiante) {
+                return res.status(404).json({ message: 'Estudiante no encontrado' });
+            }
+
+            // Verificamos si ya está asociado
+            const yaAsociado = await FamiliarEstudiante.findOne({
+                where: {
+                    ID_Estudiante: estudiante.ID_Estudiante,
+                    ID_Familiar: familiar.ID_Familiar
+                }
+            });
+
+            if (!yaAsociado) {
+                await familiar.addEstudiante(estudiante);
+            }
         }
 
-        res.json({ message: 'Familiar actualizado' });
+        res.json({ message: 'Familiar actualizado correctamente' });
     } catch (err) {
         res.status(500).json({ error: err.message });
     }
 };
+
 
 exports.deleteFamiliar = async (req, res) => {
     try {
