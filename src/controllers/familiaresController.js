@@ -1,6 +1,8 @@
 const Familiar = require('../models/familiaresModel');
 const Estudiante = require('../models/estudiantesModel');
 const FamiliarEstudiante = require('../models/FamiliarEstudianteModel');
+const { Op } = require('sequelize');
+
 
 // Función para generar un ID aleatorio de 6 dígitos
 const generarID = () => Math.floor(100000 + Math.random() * 900000);
@@ -38,33 +40,61 @@ exports.getFamiliarById = async (req, res) => {
     }
 };
 
+const limpiarCelular = (numero) => {
+    return numero.replace(/\D/g, ''); // Elimina todo lo que no sea dígito
+};
+
 exports.createFamiliar = async (req, res) => {
     try {
-        const randomID = generarID();
         const { ID_Estudiante, Representante, Parentesco, Nombre_completo, Nro_Documento, Direccion_Residencia, Celular, Email } = req.body;
+        const celularLimpio = limpiarCelular(Celular);
 
-        // Crea el familiar
-        const nuevoFamiliar = await Familiar.create({
-            ID_Familiar: randomID,
-            Representante,
-            Parentesco,
-            Nombre_completo,
-            Nro_Documento,
-            Direccion_Residencia,
-            Celular,
-            Email
+        // Buscar si ya existe un familiar por documento o celular
+        let familiar = await Familiar.findOne({
+            where: {
+                [Op.or]: [
+                    { Nro_Documento },
+                    { Celular: celularLimpio }
+                ]
+            }
         });
 
-        // Si se pasó un ID_Estudiante, asociamos el familiar al estudiante
-        if (ID_Estudiante) {
-            await nuevoFamiliar.addEstudiante(ID_Estudiante);
+        // Si no existe, lo creamos
+        if (!familiar) {
+            const randomID = generarID();
+            familiar = await Familiar.create({
+                ID_Familiar: randomID,
+                Representante,
+                Parentesco,
+                Nombre_completo,
+                Nro_Documento,
+                Direccion_Residencia,
+                Celular: celularLimpio,
+                Email
+            });
         }
 
-        res.json(nuevoFamiliar);
+        // Si se pasa un estudiante, verificamos si ya está asociado
+        if (ID_Estudiante) {
+            const yaAsociado = await FamiliarEstudiante.findOne({
+                where: {
+                    ID_Estudiante,
+                    ID_Familiar: familiar.ID_Familiar
+                }
+            });
+
+            // Si no está asociado aún, lo asociamos
+            if (!yaAsociado) {
+                await familiar.addEstudiante(ID_Estudiante);
+            }
+        }
+
+        res.json(familiar);
     } catch (err) {
         res.status(500).json({ error: err.message });
     }
 };
+
 
 exports.updateFamiliar = async (req, res) => {
     try {
