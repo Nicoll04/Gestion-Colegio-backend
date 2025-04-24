@@ -95,6 +95,30 @@ exports.createFamiliar = async (req, res) => {
     }
 };
 
+exports.verificarFamiliar = async (req, res) => {
+    try {
+        const { Nro_Documento, Celular } = req.query;
+        const celularLimpio = Celular ? limpiarCelular(Celular) : null;
+
+        const familiar = await Familiar.findOne({
+            where: {
+                [Op.or]: [
+                    Nro_Documento ? { Nro_Documento } : null,
+                    celularLimpio ? { Celular: celularLimpio } : null,
+                ].filter(Boolean) 
+            }
+        });
+
+        if (familiar) {
+            res.json(familiar);
+        } else {
+            res.status(404).json({ message: "Familiar no encontrado" });
+        }
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+};
+
 
 exports.updateFamiliar = async (req, res) => {
     try {
@@ -127,6 +151,38 @@ exports.updateFamiliar = async (req, res) => {
         }
 
         res.json({ message: 'Familiar actualizado correctamente' });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+};
+
+exports.asociarFamiliarEstudiante = async (req, res) => {
+    try {
+        const { ID_Familiar, ID_Estudiante } = req.body;
+
+        if (!ID_Familiar || !ID_Estudiante) {
+            return res.status(400).json({ message: "ID_Familiar e ID_Estudiante son requeridos" });
+        }
+
+        const familiar = await Familiar.findByPk(ID_Familiar);
+        const estudiante = await Estudiante.findByPk(ID_Estudiante);
+
+        if (!familiar || !estudiante) {
+            return res.status(404).json({ message: "Familiar o Estudiante no encontrado" });
+        }
+
+        const yaAsociado = await FamiliarEstudiante.findOne({
+            where: {
+                ID_Estudiante,
+                ID_Familiar
+            }
+        });
+
+        if (!yaAsociado) {
+            await familiar.addEstudiante(ID_Estudiante);
+        }
+
+        res.json({ message: "Familiar asociado correctamente con el estudiante" });
     } catch (err) {
         res.status(500).json({ error: err.message });
     }
