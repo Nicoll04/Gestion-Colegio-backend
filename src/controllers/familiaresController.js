@@ -1,5 +1,5 @@
 const Familiar = require('../models/familiaresModel');
-const { FamiliarEstudiante } = require('../models');
+const { FamiliarEstudiante } = require('../models/FamiliarEstudiante');
 const { Op } = require('sequelize');
 
 
