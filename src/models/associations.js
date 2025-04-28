@@ -12,14 +12,14 @@ Estudiante.belongsToMany(Familiar, {
     through: FamiliarEstudiante,
     foreignKey: 'ID_Estudiante',
     otherKey: 'ID_Familiar',
-    as: 'familiares',  // Para obtener los familiares asociados a un estudiante
+    as: 'familiares',  
 });
 
 Familiar.belongsToMany(Estudiante, {
     through: FamiliarEstudiante,
     foreignKey: 'ID_Familiar',
     otherKey: 'ID_Estudiante',
-    as: 'estudiantes',  // Para obtener los estudiantes asociados a un familiar
+    as: 'estudiantes',  
 });
 
 module.exports = { Curso, Estudiante, Familiar, FamiliarEstudiante };
