@@ -6,6 +6,10 @@ const Familiar = sequelize.define('Familiar', {
         type: DataTypes.INTEGER,
         primaryKey: true,
     },
+    ID_Estudiante: {
+        type: DataTypes.INTEGER,
+        allowNull: false
+    },
     Representante: {
         type: DataTypes.STRING,
         allowNull: false
