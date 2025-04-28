@@ -25,7 +25,6 @@ const Familiar = sequelize.define('Familiar', {
     Nro_Documento: {
         type: DataTypes.STRING,
         allowNull: true, 
-        unique: true
     },
     Direccion_Residencia: {
         type: DataTypes.STRING,
