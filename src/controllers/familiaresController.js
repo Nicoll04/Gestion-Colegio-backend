@@ -50,6 +50,36 @@ exports.createFamiliar = async (req, res) => {
     }
 };
 
+// Función para asociar un familiar a un estudiante, evitando duplicados
+exports.asociarFamiliarAEstudiante = async (req, res) => {
+    const { ID_Estudiante, ID_Familiar } = req.body;
+
+    try {
+        // Verificar si ya existe la asociación entre el estudiante y el familiar en la tabla intermedia
+        const existeAsociacion = await FamiliarEstudiante.findOne({
+            where: {
+                ID_Estudiante,
+                ID_Familiar
+            }
+        });
+
+        // Si ya existe, retornamos un mensaje indicando que no se duplicará
+        if (existeAsociacion) {
+            return res.status(400).json({ message: 'La asociación entre este familiar y estudiante ya existe.' });
+        }
+
+        // Si no existe, se crea la asociación
+        await FamiliarEstudiante.create({
+            ID_Estudiante,
+            ID_Familiar
+        });
+
+        return res.status(201).json({ message: 'Asociación realizada con éxito' });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+};
+
 exports.updateFamiliar = async (req, res) => {
     try {
         const familiar = await Familiar.findByPk(req.params.id);
