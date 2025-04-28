@@ -1,7 +1,7 @@
 const Curso = require('./cursosModel');
 const Estudiante = require('./estudiantesModel');
 const Familiar = require('./familiaresModel');
-const FamiliarEstudiante = require('./familiarEstudianteModel');  // Importamos el modelo intermedio
+const FamiliarEstudiante = require('./EstudianteFamiliarModel'); 
 
 // Relaciones entre Curso y Estudiante
 Curso.hasMany(Estudiante, { foreignKey: 'ID_Curso', as: 'estudiantes' });
