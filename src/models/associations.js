@@ -1,7 +1,6 @@
 const Curso = require('./cursosModel');
 const Estudiante = require('./estudiantesModel');
 const Familiar = require('./familiaresModel');
-const FamiliarEstudiante = require('./FamiliarEstudiante');
 
 // Relaciones entre Curso y Estudiante
 Curso.hasMany(Estudiante, { foreignKey: 'ID_Curso', as: 'estudiantes' });

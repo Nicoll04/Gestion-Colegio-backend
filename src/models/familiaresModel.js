@@ -37,7 +37,7 @@ const Familiar = sequelize.define('Familiar', {
     },
     Email: {
         type: DataTypes.STRING,
-        allowNull: true, 
+        allowNull: true,
         unique: true
     }
 }, {
