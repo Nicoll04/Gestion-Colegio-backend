@@ -117,7 +117,7 @@ exports.asignarRol = async (req, res) => {
     const { Rol } = req.body;
     const ID_Usuario = req.usuario.ID_Usuario; 
 
-    if (!['admin', 'secretaria', 'coordinacion'].includes(Rol)) {
+    if (!['admin', 'secretaria', 'coordinacion','profesor'].includes(Rol)) {
         return res.status(400).json({ error: 'Rol no válido' });
     }
 

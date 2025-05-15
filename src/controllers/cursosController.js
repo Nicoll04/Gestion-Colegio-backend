@@ -23,6 +23,26 @@ exports.getEstudiantesByCurso = async (req, res) => {
     }
 };
 
+exports.obtenerCursoDelProfesor = async (req, res) => {
+  const profesorId = req.usuario.ID_Usuario;
+
+  try {
+    const curso = await Curso.findOne({
+      where: { ID_ProfesorDirector: profesorId },
+      include: [{ model: Estudiante, as: 'estudiantes' }]
+    });
+
+    if (!curso) {
+      return res.status(404).json({ mensaje: 'No se encontró un curso dirigido por este profesor.' });
+    }
+
+    res.json(curso);
+  } catch (error) {
+    console.error('Error al obtener el curso del profesor:', error);
+    res.status(500).json({ error: 'Error al obtener el curso del profesor' });
+  }
+};
+
 // Obtener todos los cursos
 exports.getAllCursos = async (req, res) => {
     try {

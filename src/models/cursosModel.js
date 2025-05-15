@@ -15,6 +15,14 @@ const Curso = sequelize.define('Curso', {
     Grado: {
         type: DataTypes.ENUM('Preescolar', 'Primaria', 'Bachillerato'),
         allowNull: false
+    },
+     ID_ProfesorDirector: { 
+        type: DataTypes.INTEGER,
+        allowNull: true,
+        references: {
+            model: 'Profesores',
+            key: 'ID_Profesores'
+        }
     }
 }, {
     tableName: 'Curso',

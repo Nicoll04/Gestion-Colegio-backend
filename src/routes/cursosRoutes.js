@@ -11,6 +11,7 @@ router.get('/:id/estudiantes', verificarToken, verificarRol(["admin", "coordinac
 router.post('/', verificarToken, cursosController.createCurso);
 router.put('/:id', verificarToken, cursosController.updateCurso);
 router.delete('/:id', verificarToken, cursosController.deleteCurso);
+router.get('/mi-curso', verificarToken, verificarRol(['profesor']), obtenerCursoDelProfesor);
 
 
 module.exports = router;
