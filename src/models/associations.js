@@ -15,4 +15,5 @@ Familiar.belongsTo(Estudiante, { foreignKey: "ID_Estudiante", as: "estudiante" }
 Curso.belongsTo(Profesor, { foreignKey: 'ID_ProfesorDirector', as: 'director' });
 Profesor.hasOne(Curso, { foreignKey: 'ID_ProfesorDirector', as: 'cursoDirigido' });
 
-module.exports = { Curso, Estudiante, Familiar };
+module.exports = { Curso, Estudiante, Familiar, Profesor };
+
