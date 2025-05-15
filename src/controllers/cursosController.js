@@ -69,49 +69,51 @@ exports.getCursoById = async (req, res) => {
 // Crear un nuevo curso
 exports.createCurso = async (req, res) => {
     try {
-        const { Nombre_curso, Grado } = req.body;
+        const { Nombre_curso, Grado, ID_ProfesorDirector } = req.body;
+
         if (!Nombre_curso || !Grado) {
             return res.status(400).json({ error: 'Todos los campos son obligatorios' });
         }
+
         if (!['Preescolar', 'Primaria', 'Bachillerato'].includes(Grado)) {
             return res.status(400).json({ error: 'Grado no válido' });
         }
-        const nuevoCurso = await Curso.create({ Nombre_curso, Grado });
+
+        const nuevoCurso = await Curso.create({ Nombre_curso, Grado, ID_ProfesorDirector });
+
         res.json({ message: 'Curso creado', id: nuevoCurso.ID_Curso });
     } catch (err) {
         res.status(500).json({ error: err.message });
     }
-};    
+};
+
 
 // Actualizar un curso por ID
 exports.updateCurso = async (req, res) => {
     try {
-        const { Nombre_curso, Grado } = req.body;
+        const { Nombre_curso, Grado, ID_ProfesorDirector } = req.body;
 
-        // Validar si los campos están presentes
         if (!Nombre_curso || !Grado) {
             return res.status(400).json({ error: "Todos los campos son obligatorios" });
         }
 
-        // Validar que el Grado sea uno de los valores permitidos
         if (!["Preescolar", "Primaria", "Bachillerato"].includes(Grado)) {
             return res.status(400).json({ error: "Grado no válido" });
         }
 
-        // Buscar el curso por ID
         const curso = await Curso.findByPk(req.params.id);
         if (!curso) {
             return res.status(404).json({ message: "Curso no encontrado" });
         }
 
-        // Actualizar el curso con los nuevos datos
-        await curso.update({ Nombre_curso, Grado });
+        await curso.update({ Nombre_curso, Grado, ID_ProfesorDirector });
 
         res.json({ message: "Curso actualizado" });
     } catch (err) {
         res.status(500).json({ error: err.message });
     }
 };
+
 
 // Eliminar un curso por ID
 exports.deleteCurso = async (req, res) => {
