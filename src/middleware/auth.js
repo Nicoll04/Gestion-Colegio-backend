@@ -16,6 +16,7 @@ exports.verificarToken = (req, res, next) => {
         const verificado = jwt.verify(token, process.env.JWT_SECRET);
         console.log('Usuario verificado:', verificado); 
         req.usuario = verificado;
+        console.log(req.usuario)
         next();
     } catch (err) {
         console.log('Error al verificar token:', err.message);
