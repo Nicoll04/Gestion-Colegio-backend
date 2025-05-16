@@ -93,6 +93,9 @@ exports.googleLogin = async (req, res) => {
             esNuevo = true;
         }
 
+        console.log('Creando token para usuario:', usuario.ID_Usuario);
+
+
         const token = jwt.sign(
             { ID_Usuario: usuario.ID_Usuario, Rol: usuario.Rol },
             process.env.JWT_SECRET,
@@ -117,6 +120,10 @@ exports.asignarRol = async (req, res) => {
     const { Rol } = req.body;
     const ID_Usuario = req.usuario.ID_Usuario; 
 
+    if (!ID_Usuario) {
+    return res.status(400).json({ error: 'ID del usuario no presente en el token' });
+}
+
     console.log("Asignar rol => req.usuario:", req.usuario);
     console.log("Rol recibido:", req.body.Rol);
 
@@ -135,7 +142,7 @@ exports.asignarRol = async (req, res) => {
         const nuevoToken = jwt.sign(
             { ID_Usuario: usuario.ID_Usuario, Rol: usuario.Rol },
             process.env.JWT_SECRET,
-            { expiresIn: '1h' }
+            { expiresIn: '2h' }
         );
 
         res.json({ 
