@@ -11,7 +11,7 @@ Estudiante.belongsTo(Curso, { foreignKey: 'ID_Curso', onDelete: 'SET NULL', onUp
 Estudiante.hasMany(Familiar, { foreignKey: "ID_Estudiante", as: "familiares" });
 Familiar.belongsTo(Estudiante, { foreignKey: "ID_Estudiante", as: "estudiante" });
 
-// Nuevo: Curso - Profesor director
+// Curso - Profesor director
 Curso.belongsTo(Profesor, { foreignKey: 'ID_ProfesorDirector', as: 'director' });
 Profesor.hasOne(Curso, { foreignKey: 'ID_ProfesorDirector', as: 'cursoDirigido' });
 

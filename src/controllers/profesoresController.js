@@ -2,7 +2,6 @@ const Profesor = require('../models/profesoresModel');
 const cloudinary = require("../config/cloudinaryConfig");
 const multer = require("multer");
 
-// Configurar multer para manejar imágenes en memoria
 const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
 
@@ -125,3 +124,20 @@ exports.deleteProfesor = async (req, res) => {
     }
 };
 
+// Buscar un profesor por correo institucional
+exports.getProfesorByCorreo = async (req, res) => {
+    try {
+        const correo = req.params.correo;
+        const profesor = await Profesor.findOne({
+            where: { Correo_institucional: correo }
+        });
+
+        if (!profesor) {
+            return res.status(404).json({ message: 'Profesor no encontrado' });
+        }
+
+        res.json(profesor);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+};
