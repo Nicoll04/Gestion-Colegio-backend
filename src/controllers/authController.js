@@ -50,12 +50,15 @@ exports.login = async (req, res) => {
 
         // Generar token JWT con el rol del usuario
         const token = jwt.sign(
-            { ID_Usuario: usuario.ID_Usuario, Rol: usuario.Rol },
-            process.env.JWT_SECRET,
-            { expiresIn: '1h' }
+        { 
+            ID_Usuario: usuario.ID_Usuario, 
+            Rol: usuario.Rol,
+            Correo: usuario.Correo 
+        },
+        process.env.JWT_SECRET,
+        { expiresIn: '1h' }
         );
 
-        // 🔹 Ahora enviamos el token Y el rol del usuario
         res.json({ token, rol: usuario.Rol });
 
     } catch (err) {
@@ -97,10 +100,15 @@ exports.googleLogin = async (req, res) => {
 
 
         const token = jwt.sign(
-            { ID_Usuario: usuario.ID_Usuario, Rol: usuario.Rol },
-            process.env.JWT_SECRET,
-            { expiresIn: '2h' }
+        { 
+            ID_Usuario: usuario.ID_Usuario, 
+            Rol: usuario.Rol,
+            Correo: usuario.Correo 
+        },
+        process.env.JWT_SECRET,
+        { expiresIn: '2h' }
         );
+
 
         res.json({
             token,
@@ -140,10 +148,15 @@ exports.asignarRol = async (req, res) => {
         await usuario.save();
 
         const nuevoToken = jwt.sign(
-            { ID_Usuario: usuario.ID_Usuario, Rol: usuario.Rol },
-            process.env.JWT_SECRET,
-            { expiresIn: '2h' }
+        { 
+            ID_Usuario: usuario.ID_Usuario, 
+            Rol: usuario.Rol,
+            Correo: usuario.Correo // 🔥 AGREGA ESTO
+        },
+        process.env.JWT_SECRET,
+        { expiresIn: '2h' }
         );
+
 
         res.json({ 
             message: 'Rol asignado correctamente', 

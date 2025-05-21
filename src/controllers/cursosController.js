@@ -1,11 +1,22 @@
 const Curso = require('../models/cursosModel');
 const Estudiante = require('../models/estudiantesModel');
 
+// Lista de correos autorizados
+const correosAutorizados = [
+    'Romero_Rocio276@isantamariac.edu.co',
+    'Gil_Jenny431@isantamariac.edu.co',
+    'yireth_segura177@isantamariac.edu.co',
+    'sandra_ramirez207@isantamariac.edu.co',
+    'liliana_gonzalez629@isantamariac.edu.co'
+];
+
 
 // Obtener estudiantes por curso
 exports.getEstudiantesByCurso = async (req, res) => {
     try {
         const { id } = req.params;
+        const { Rol, Correo } = req.usuario;
+
         const curso = await Curso.findByPk(id, {
             include: {
                 model: Estudiante,
@@ -17,36 +28,44 @@ exports.getEstudiantesByCurso = async (req, res) => {
             return res.status(404).json({ message: 'Curso no encontrado' });
         }
 
+        // Restricción para profesores
+        if (Rol === 'profesor') {
+            if (!correosAutorizados.includes(Correo)) {
+                return res.status(403).json({ error: 'No tienes permisos para ver los estudiantes de este curso' });
+            }
+
+            if (!['Kinder', 'Transición', 'Primero', 'Segundo', 'Tercero'].includes(curso.Nombre_curso)) {
+                return res.status(403).json({ error: 'No puedes acceder a estudiantes de este curso' });
+            }
+        }
+
         res.json(curso.estudiantes);
     } catch (err) {
         res.status(500).json({ error: err.message });
     }
 };
 
-exports.obtenerCursoDelProfesor = async (req, res) => {
-  const profesorId = req.usuario.ID_Usuario;
-
-  try {
-    const curso = await Curso.findOne({
-      where: { ID_ProfesorDirector: profesorId },
-      include: [{ model: Estudiante, as: 'estudiantes' }]
-    });
-
-    if (!curso) {
-      return res.status(404).json({ mensaje: 'No se encontró un curso dirigido por este profesor.' });
-    }
-
-    res.json(curso);
-  } catch (error) {
-    console.error('Error al obtener el curso del profesor:', error);
-    res.status(500).json({ error: 'Error al obtener el curso del profesor' });
-  }
-};
-
 // Obtener todos los cursos
 exports.getAllCursos = async (req, res) => {
     try {
-        const cursos = await Curso.findAll();
+        const { Rol, Correo } = req.usuario;
+
+        let cursos;
+
+        if (Rol === 'profesor') {
+            if (!correosAutorizados.includes(Correo)) {
+                return res.status(403).json({ error: 'No tienes permisos para ver estos cursos' });
+            }
+
+            cursos = await Curso.findAll({
+                where: {
+                    Nombre_curso: ['Kinder', 'Transición', 'Primero', 'Segundo', 'Tercero']
+                }
+            });
+        } else {
+            cursos = await Curso.findAll();
+        }
+
         res.json(cursos);
     } catch (err) {
         res.status(500).json({ error: err.message });
